@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>Manage Quiz Questions</h1>
+  <form method="post" class="tool-panel mb-4">
+    {{ form.hidden_tag() }}
+    {{ form.question.label(class="form-label") }}{{ form.question(class="form-control", rows=3) }}
+    <div class="row g-3 mt-1">
+      <div class="col-md-3">{{ form.option_a.label(class="form-label") }}{{ form.option_a(class="form-control") }}</div>
+      <div class="col-md-3">{{ form.option_b.label(class="form-label") }}{{ form.option_b(class="form-control") }}</div>
+      <div class="col-md-3">{{ form.option_c.label(class="form-label") }}{{ form.option_c(class="form-control") }}</div>
+      <div class="col-md-3">{{ form.option_d.label(class="form-label") }}{{ form.option_d(class="form-control") }}</div>
+      <div class="col-md-6">{{ form.correct_answer.label(class="form-label") }}{{ form.correct_answer(class="form-select") }}</div>
+      <div class="col-md-6">{{ form.category.label(class="form-label") }}{{ form.category(class="form-control") }}</div>
+    </div>
+    {{ form.submit(class="btn btn-success mt-3") }}
+  </form>
+  {% for q in questions %}<p class="list-line"><strong>{{ q.category }}</strong> {{ q.question }}</p>{% endfor %}
+</section>
+{% endblock %}

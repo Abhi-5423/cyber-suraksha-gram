@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <h1>AI Cyber Assistant</h1>
+      <form method="post" class="tool-panel">
+        {{ form.hidden_tag() }}
+        {{ form.message.label(class="form-label") }}
+        {{ form.message(class="form-control", rows=5, placeholder="Ask about UPI, OTP, QR, KYC, loan app fraud or emergency help") }}
+        <div class="d-flex gap-2 mt-3">
+          {{ form.submit(class="btn btn-success") }}
+          <button class="btn btn-outline-secondary" type="button" id="voiceStart">Voice</button>
+          <button class="btn btn-outline-secondary" type="button" id="speakReply">Speak</button>
+          <button class="btn btn-outline-secondary" type="button" id="serverSpeakReply">gTTS</button>
+        </div>
+      </form>
+      <audio class="w-100 mt-3" id="serverVoicePlayer" controls hidden></audio>
+      {% if reply %}<div class="assistant-reply mt-3" id="assistantReply">{{ reply }}</div>{% endif %}
+    </div>
+    <div class="col-lg-6"><h2>History</h2>{% for h in history %}<p class="list-line"><strong>You:</strong> {{ h.message }}<br><strong>Assistant:</strong> {{ h.response }}</p>{% else %}<p>Ask a question to begin.</p>{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

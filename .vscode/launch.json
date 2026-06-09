@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cyber Suraksha Gram: Flask",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/run.py",
+            "console": "integratedTerminal",
+            "env": {
+                "FLASK_DEBUG": "1",
+                "SECRET_KEY": "dev-change-this-secret-before-deploy"
+            },
+            "justMyCode": true,
+            "serverReadyAction": {
+                "pattern": "Running on (http://127.0.0.1:5000)",
+                "uriFormat": "%s",
+                "action": "openExternally"
+            }
+        },
+        {
+            "name": "Open Cyber Suraksha Gram",
+            "type": "pwa-chrome",
+            "request": "launch",
+            "url": "http://127.0.0.1:5000",
+            "webRoot": "${workspaceFolder}/app/static"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Run App and Browser",
+            "configurations": [
+                "Cyber Suraksha Gram: Flask",
+                "Open Cyber Suraksha Gram"
+            ]
+        }
+    ]
+}

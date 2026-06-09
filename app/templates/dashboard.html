@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>Dashboard</h1>
+  <div class="row g-3">
+    <div class="col-md-4"><div class="metric"><span>{{ current_user.score }}</span><small>Best Score</small></div></div>
+    <div class="col-md-4"><div class="metric"><span>{{ current_user.role|title }}</span><small>Role</small></div></div>
+    <div class="col-md-4"><a class="metric link-metric" href="{{ url_for('main.certificate') }}"><span>PDF</span><small>Download Certificate</small></a></div>
+  </div>
+  <div class="row g-4 mt-2">
+    <div class="col-lg-6"><h2>Recent Quiz Results</h2>{% for r in results %}<p class="list-line">{{ r.score }}/100 on {{ r.date.date() }}</p>{% else %}<p>No quiz results yet.</p>{% endfor %}</div>
+    <div class="col-lg-6"><h2>Recent Assistant Chats</h2>{% for c in chats %}<p class="list-line">{{ c.message }} → {{ c.response }}</p>{% else %}<p>No chat history yet.</p>{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

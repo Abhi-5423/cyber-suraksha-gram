@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest_cache_runtime/
+.venv/
+venv/
+cyber-suraksha-gram/venv/
+cyber-suraksha-gram/
+__pycache__/
+instance/
+*.db
+*.sqlite
+*.sqlite3
+.env
+server.*.log
+*.log

@@ -1,0 +1,69 @@
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed, FileField
+from wtforms import EmailField, PasswordField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
+
+
+LANGUAGES = [("en", "English"), ("hi", "Hindi"), ("bho", "Bhojpuri"), ("mai", "Maithili")]
+ROLES = [("citizen", "Village Citizen"), ("volunteer", "Awareness Volunteer"), ("admin", "Administrator")]
+
+
+class RegisterForm(FlaskForm):
+    full_name = StringField("Full name", validators=[DataRequired(), Length(min=2, max=120)])
+    email = EmailField("Email", validators=[DataRequired(), Email(), Length(max=255)])
+    village = StringField("Village", validators=[DataRequired(), Length(min=2, max=120)])
+    district = StringField("District", validators=[DataRequired(), Length(min=2, max=120)])
+    language = SelectField("Language", choices=LANGUAGES)
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=8, max=128)])
+    confirm_password = PasswordField("Confirm password", validators=[DataRequired(), EqualTo("password")])
+    submit = SubmitField("Create Account")
+
+
+class LoginForm(FlaskForm):
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Login")
+
+
+class ScamCheckForm(FlaskForm):
+    message = TextAreaField("Message", validators=[Optional(), Length(max=3000)])
+    screenshot = FileField(
+        "Upload Screenshot",
+        validators=[FileAllowed(["jpg", "jpeg", "png", "webp", "bmp"], "Images only.")],
+    )
+    submit = SubmitField("Check Risk")
+
+
+class ChatForm(FlaskForm):
+    message = TextAreaField("Ask cyber assistant", validators=[DataRequired(), Length(min=2, max=800)])
+    submit = SubmitField("Send")
+
+
+class ArticleForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired(), Length(max=160)])
+    category = StringField("Category", validators=[DataRequired(), Length(max=80)])
+    language = SelectField("Language", choices=LANGUAGES)
+    content = TextAreaField("Content", validators=[DataRequired(), Length(min=20, max=6000)])
+    submit = SubmitField("Save Article")
+
+
+class QuizQuestionForm(FlaskForm):
+    question = TextAreaField("Question", validators=[DataRequired(), Length(min=10, max=1000)])
+    option_a = StringField("Option A", validators=[DataRequired(), Length(max=255)])
+    option_b = StringField("Option B", validators=[DataRequired(), Length(max=255)])
+    option_c = StringField("Option C", validators=[DataRequired(), Length(max=255)])
+    option_d = StringField("Option D", validators=[DataRequired(), Length(max=255)])
+    correct_answer = SelectField("Correct Answer", choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")])
+    category = StringField("Category", validators=[DataRequired(), Length(max=80)])
+    submit = SubmitField("Save Question")
+
+
+class UserRoleForm(FlaskForm):
+    role = SelectField("Role", choices=ROLES)
+    submit = SubmitField("Update Role")
+
+
+class ReportFraudForm(FlaskForm):
+    message = TextAreaField("Incident details", validators=[DataRequired(), Length(min=20, max=2000)])
+    contact = StringField("Phone or email", validators=[Optional(), Length(max=120)])
+    submit = SubmitField("Prepare Report")

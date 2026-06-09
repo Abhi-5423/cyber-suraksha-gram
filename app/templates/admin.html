@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>Admin Dashboard</h1>
+  <div class="row g-3">
+    {% for label, value in [("Daily Users", analytics.users), ("Fraud Checks", analytics.reports), ("Quiz Participation", analytics.quizzes), ("Articles", analytics.articles)] %}
+    <div class="col-md-3"><div class="metric"><span>{{ value }}</span><small>{{ label }}</small></div></div>
+    {% endfor %}
+  </div>
+  <div class="tool-panel mt-4">
+    <h2>Top Scam Types</h2>
+    <div class="chart-bars">
+      {% for name, count in analytics.top_scam_types %}
+      <div><span>{{ name }}</span><meter min="0" max="20" value="{{ count }}"></meter><strong>{{ count }}</strong></div>
+      {% else %}<p>No fraud checks yet.</p>{% endfor %}
+    </div>
+  </div>
+  <div class="d-flex flex-wrap gap-2 mt-4">
+    <a class="btn btn-success" href="{{ url_for('main.admin_articles') }}">Manage Articles</a>
+    <a class="btn btn-success" href="{{ url_for('main.admin_quiz') }}">Manage Quiz</a>
+    <a class="btn btn-success" href="{{ url_for('main.admin_reports') }}">Scam Reports</a>
+    {% if current_user.is_admin %}<a class="btn btn-success" href="{{ url_for('main.admin_users') }}">Users</a>{% endif %}
+  </div>
+</section>
+{% endblock %}

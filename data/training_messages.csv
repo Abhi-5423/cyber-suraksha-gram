@@ -1,0 +1,31 @@
+text,label,category
+"Congratulations! You won a lottery prize. Click http://claim-prize.xyz and pay processing fee.",fraud,Lottery
+"Your KYC will expire today. Verify account now and share OTP.",fraud,KYC
+"Loan approved instantly. Pay 999 rupees file charge to receive money.",fraud,Loan App
+"Scan this QR code to receive payment and enter your UPI PIN.",fraud,UPI
+"Government benefit released under PM yojana. Open http://benefit-click.top.",fraud,Government Scheme
+"Bank account blocked. Urgent password verification required.",fraud,Banking
+"Your parcel is held. Click unknown link and update card details.",fraud,Phishing
+"I am your friend using a new number. Send money urgently.",fraud,WhatsApp
+"Free reward from telecom company. Share OTP to activate.",fraud,OTP
+"Your social media account will close. Login at http://secure-login.xyz.",fraud,Social Media
+"RBI refund approved. Pay tax first to receive amount.",fraud,Banking
+"Install screen sharing app for KYC verification.",fraud,KYC
+"UPI collect request pending. Accept to receive cashback.",fraud,UPI
+"Fake job confirmed. Pay registration fee by UPI.",fraud,Job Scam
+"Aadhaar update mandatory. Click this link immediately.",fraud,Phishing
+"Your bank branch will remain closed on Sunday.",safe,Banking
+"Your UPI payment of Rs 250 was successful.",safe,UPI
+"Reminder: do not share OTP, PIN or password with anyone.",safe,Awareness
+"Meeting for village cyber awareness camp at 4 PM.",safe,Awareness
+"Electricity bill payment receipt generated successfully.",safe,Utility
+"Your password was changed successfully from official app.",safe,Account
+"Cyber fraud helpline is 1930 and portal is cybercrime.gov.in.",safe,Emergency
+"School scholarship form is available at district office.",safe,Government
+"Your order has been delivered. Thank you for shopping.",safe,Commerce
+"Bank interest certificate is ready in official net banking.",safe,Banking
+"UPI Lite balance updated in your official app.",safe,UPI
+"Panchayat digital safety training starts tomorrow.",safe,Awareness
+"Please verify receiver name before making payment.",safe,Awareness
+"Police cyber cell awareness van will visit the village.",safe,Awareness
+"Use strong passwords and enable screen lock.",safe,Mobile Security

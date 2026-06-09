@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>Manage Awareness Articles</h1>
+  <form method="post" class="tool-panel mb-4">
+    {{ form.hidden_tag() }}
+    <div class="row g-3">
+      <div class="col-md-4">{{ form.title.label(class="form-label") }}{{ form.title(class="form-control") }}</div>
+      <div class="col-md-4">{{ form.category.label(class="form-label") }}{{ form.category(class="form-control") }}</div>
+      <div class="col-md-4">{{ form.language.label(class="form-label") }}{{ form.language(class="form-select") }}</div>
+      <div class="col-12">{{ form.content.label(class="form-label") }}{{ form.content(class="form-control", rows=5) }}</div>
+    </div>
+    {{ form.submit(class="btn btn-success mt-3") }}
+  </form>
+  {% for article in articles %}<p class="list-line"><strong>{{ article.title }}</strong> {{ article.category }} / {{ article.language }}</p>{% endfor %}
+</section>
+{% endblock %}

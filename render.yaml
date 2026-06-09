@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: cyber-suraksha-gram
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///cyber_suraksha.db
+      - key: RATELIMIT_STORAGE_URI
+        value: memory://
