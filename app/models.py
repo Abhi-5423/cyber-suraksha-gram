@@ -23,6 +23,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime(timezone=True), default=utc_now, nullable=False)
 
     quiz_results = db.relationship("QuizResult", backref="user", lazy=True)
+    question_history = db.relationship("UserQuestionHistory", backref="user", lazy=True)
     chats = db.relationship("ChatHistory", backref="user", lazy=True)
 
     def set_password(self, password):
@@ -49,6 +50,9 @@ class QuizQuestion(db.Model):
     option_d = db.Column(db.String(255), nullable=False)
     correct_answer = db.Column(db.String(1), nullable=False)
     category = db.Column(db.String(80), nullable=False, index=True)
+    difficulty = db.Column(db.String(30), default="Beginner", nullable=False, index=True)
+
+    attempts = db.relationship("UserQuestionHistory", backref="question", lazy=True)
 
 
 class QuizResult(db.Model):
@@ -56,6 +60,13 @@ class QuizResult(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime(timezone=True), default=utc_now, nullable=False)
+
+
+class UserQuestionHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
+    question_id = db.Column(db.Integer, db.ForeignKey("quiz_question.id"), nullable=False, index=True)
+    attempted_at = db.Column(db.DateTime(timezone=True), default=utc_now, nullable=False)
 
 
 class ScamReport(db.Model):

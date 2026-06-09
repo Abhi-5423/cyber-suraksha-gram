@@ -11,6 +11,14 @@ Build Command: pip install -r requirements.txt
 Start Command: gunicorn wsgi:app
 ```
 
+Set environment variables:
+
+```text
+SECRET_KEY=<strong random secret>
+DATABASE_URL=<managed database url>
+FLASK_ENV=production
+```
+
 The included `render.yaml` can also be used as a Render Blueprint.
 
 ## Railway
@@ -21,6 +29,14 @@ The included `render.yaml` can also be used as a Render Blueprint.
 
 ```text
 Start Command: gunicorn wsgi:app
+```
+
+Set environment variables:
+
+```text
+SECRET_KEY=<strong random secret>
+DATABASE_URL=<managed database url>
+FLASK_ENV=production
 ```
 
 Railway CLI option:
@@ -42,6 +58,7 @@ pip install -r requirements.txt
 
 4. In the PythonAnywhere Web tab, set the WSGI file to import the app from `wsgi.py`.
 5. Set environment variables such as `SECRET_KEY`.
+6. Set `DATABASE_URL` and `FLASK_ENV=production` for hosted deployments.
 
 ## Important Production Notes
 

@@ -6,6 +6,18 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 LANGUAGES = [("en", "English"), ("hi", "Hindi"), ("bho", "Bhojpuri"), ("mai", "Maithili")]
 ROLES = [("citizen", "Village Citizen"), ("volunteer", "Awareness Volunteer"), ("admin", "Administrator")]
+QUIZ_CATEGORIES = [
+    ("UPI Safety", "UPI Safety"),
+    ("OTP Fraud", "OTP Fraud"),
+    ("Banking Security", "Banking Security"),
+    ("Social Media Security", "Social Media Security"),
+    ("Mobile Security", "Mobile Security"),
+]
+DIFFICULTIES = [
+    ("Beginner", "Beginner"),
+    ("Intermediate", "Intermediate"),
+    ("Advanced", "Advanced"),
+]
 
 
 class RegisterForm(FlaskForm):
@@ -54,7 +66,8 @@ class QuizQuestionForm(FlaskForm):
     option_c = StringField("Option C", validators=[DataRequired(), Length(max=255)])
     option_d = StringField("Option D", validators=[DataRequired(), Length(max=255)])
     correct_answer = SelectField("Correct Answer", choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")])
-    category = StringField("Category", validators=[DataRequired(), Length(max=80)])
+    category = SelectField("Category", choices=QUIZ_CATEGORIES)
+    difficulty = SelectField("Difficulty", choices=DIFFICULTIES)
     submit = SubmitField("Save Question")
 
 

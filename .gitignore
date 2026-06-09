@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .pytest_cache_runtime/
+.pytest_tmp/
 .venv/
 venv/
 cyber-suraksha-gram/venv/

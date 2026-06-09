@@ -1,4 +1,5 @@
 import json
+import random
 from collections import Counter
 from pathlib import Path
 
@@ -7,8 +8,8 @@ from flask_login import current_user, login_required, login_user, logout_user
 from urllib.parse import urlparse
 
 from . import csrf, db, limiter
-from .forms import ArticleForm, ChatForm, LoginForm, QuizQuestionForm, RegisterForm, ReportFraudForm, ScamCheckForm, UserRoleForm
-from .models import AwarenessArticle, ChatHistory, QuizQuestion, QuizResult, ScamReport, User
+from .forms import ArticleForm, ChatForm, DIFFICULTIES, LoginForm, QUIZ_CATEGORIES, QuizQuestionForm, RegisterForm, ReportFraudForm, ScamCheckForm, UserRoleForm
+from .models import AwarenessArticle, ChatHistory, QuizQuestion, QuizResult, ScamReport, User, UserQuestionHistory
 from .security import roles_required, sanitize_html, sanitize_text
 from .services.certificate import generate_certificate
 from .services.chatbot import assistant_reply
@@ -20,6 +21,7 @@ from .services.voice import synthesize_speech, transcribe_audio
 main_bp = Blueprint("main", __name__)
 BASE_DIR = Path(__file__).resolve().parent
 SUPPORTED_LANGUAGES = {"en", "hi", "bho", "mai"}
+QUIZ_ATTEMPT_SIZE = 10
 
 
 def current_language():
@@ -37,6 +39,85 @@ def safe_redirect_target():
     if parsed.netloc and parsed.netloc != request.host:
         return url_for("main.home")
     return referrer
+
+
+def valid_quiz_filter(value, choices):
+    allowed = {choice for choice, _label in choices}
+    return value if value in allowed else ""
+
+
+def _quiz_query(category="", difficulty=""):
+    query = QuizQuestion.query
+    if category:
+        query = query.filter(QuizQuestion.category == category)
+    if difficulty:
+        query = query.filter(QuizQuestion.difficulty == difficulty)
+    return query
+
+
+def _append_unique_questions(target, candidates, seen_ids, limit):
+    shuffled = candidates[:]
+    random.shuffle(shuffled)
+    for question in shuffled:
+        if question.id in seen_ids:
+            continue
+        target.append(question)
+        seen_ids.add(question.id)
+        if len(target) >= limit:
+            break
+
+
+def select_quiz_questions(user_id, category="", difficulty="", limit=QUIZ_ATTEMPT_SIZE):
+    query = _quiz_query(category=category, difficulty=difficulty)
+
+    pool = query.all()
+    if not pool:
+        pool = QuizQuestion.query.all()
+
+    total_pool = QuizQuestion.query.all()
+    if len(total_pool) <= limit:
+        selected = total_pool[:]
+        random.shuffle(selected)
+        return selected
+
+    if len(pool) == limit:
+        selected = pool[:]
+        random.shuffle(selected)
+        return selected
+
+    attempted_ids = {
+        row.question_id
+        for row in UserQuestionHistory.query.filter_by(user_id=user_id).with_entities(UserQuestionHistory.question_id)
+    }
+    selected = []
+    selected_ids = set()
+
+    strict_unused = [question for question in pool if question.id not in attempted_ids]
+    strict_pool = strict_unused if strict_unused else pool
+    _append_unique_questions(selected, strict_pool, selected_ids, limit)
+
+    if len(selected) < limit and category:
+        category_pool = [
+            question
+            for question in _quiz_query(category=category).all()
+            if question.id not in attempted_ids
+        ]
+        _append_unique_questions(selected, category_pool, selected_ids, limit)
+
+    if len(selected) < limit and difficulty:
+        difficulty_pool = [
+            question
+            for question in _quiz_query(difficulty=difficulty).all()
+            if question.id not in attempted_ids
+        ]
+        _append_unique_questions(selected, difficulty_pool, selected_ids, limit)
+
+    if len(selected) < limit:
+        full_unused = [question for question in total_pool if question.id not in attempted_ids]
+        fallback_pool = full_unused if len(full_unused) >= limit - len(selected) else total_pool
+        _append_unique_questions(selected, fallback_pool, selected_ids, limit)
+
+    return selected[:limit]
 
 
 def _translations():
@@ -189,18 +270,44 @@ def api_voice_speak():
 @main_bp.route("/quiz", methods=["GET", "POST"])
 @login_required
 def quiz():
-    questions = QuizQuestion.query.order_by(QuizQuestion.id).limit(10).all()
+    category = valid_quiz_filter(request.args.get("category", ""), QUIZ_CATEGORIES)
+    difficulty = valid_quiz_filter(request.args.get("difficulty", ""), DIFFICULTIES)
     if request.method == "POST":
+        question_ids = session.get("quiz_question_ids", [])
+        if not question_ids:
+            question_ids = [
+                int(key[1:])
+                for key in request.form
+                if key.startswith("q") and key[1:].isdigit()
+            ]
+        questions = QuizQuestion.query.filter(QuizQuestion.id.in_(question_ids)).all() if question_ids else []
+        question_map = {question.id: question for question in questions}
+        ordered_questions = [question_map[question_id] for question_id in question_ids if question_id in question_map]
+        if not ordered_questions:
+            flash("Quiz attempt expired. Please start a new quiz.", "warning")
+            return redirect(url_for("main.quiz"))
         score = 0
-        for q in questions:
+        for q in ordered_questions:
             if request.form.get(f"q{q.id}") == q.correct_answer:
                 score += 10
         current_user.score = max(current_user.score, score)
         db.session.add(QuizResult(user_id=current_user.id, score=score))
+        for question_id in question_ids:
+            db.session.add(UserQuestionHistory(user_id=current_user.id, question_id=question_id))
         db.session.commit()
+        session.pop("quiz_question_ids", None)
         flash(f"Quiz completed. Score: {score}/100", "success")
         return redirect(url_for("main.dashboard"))
-    return render_template("quiz.html", questions=questions)
+    questions = select_quiz_questions(current_user.id, category=category, difficulty=difficulty)
+    session["quiz_question_ids"] = [question.id for question in questions]
+    return render_template(
+        "quiz.html",
+        questions=questions,
+        categories=QUIZ_CATEGORIES,
+        difficulties=DIFFICULTIES,
+        selected_category=category,
+        selected_difficulty=difficulty,
+    )
 
 
 @main_bp.route("/certificate")
@@ -214,14 +321,25 @@ def certificate():
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
-    results = QuizResult.query.filter_by(user_id=current_user.id).order_by(QuizResult.date.desc()).limit(5).all()
+    all_results = QuizResult.query.filter_by(user_id=current_user.id).order_by(QuizResult.date.desc()).all()
+    results = all_results[:5]
+    total_quizzes = len(all_results)
+    average_score = round(sum(result.score for result in all_results) / total_quizzes, 1) if total_quizzes else 0
+    best_score = max((result.score for result in all_results), default=current_user.score)
     chats = ChatHistory.query.filter_by(user_id=current_user.id).order_by(ChatHistory.timestamp.desc()).limit(5).all()
-    return render_template("dashboard.html", results=results, chats=chats)
+    return render_template(
+        "dashboard.html",
+        results=results,
+        chats=chats,
+        total_quizzes=total_quizzes,
+        average_score=average_score,
+        best_score=best_score,
+    )
 
 
 @main_bp.route("/leaderboard")
 def leaderboard():
-    users = User.query.order_by(User.score.desc(), User.full_name.asc()).limit(20).all()
+    users = User.query.order_by(User.score.desc(), User.full_name.asc()).limit(10).all()
     return render_template("leaderboard.html", users=users)
 
 
@@ -337,7 +455,7 @@ def admin_articles():
 def admin_quiz():
     form = QuizQuestionForm()
     if form.validate_on_submit():
-        db.session.add(QuizQuestion(question=sanitize_text(form.question.data), option_a=sanitize_text(form.option_a.data), option_b=sanitize_text(form.option_b.data), option_c=sanitize_text(form.option_c.data), option_d=sanitize_text(form.option_d.data), correct_answer=form.correct_answer.data, category=sanitize_text(form.category.data)))
+        db.session.add(QuizQuestion(question=sanitize_text(form.question.data), option_a=sanitize_text(form.option_a.data), option_b=sanitize_text(form.option_b.data), option_c=sanitize_text(form.option_c.data), option_d=sanitize_text(form.option_d.data), correct_answer=form.correct_answer.data, category=form.category.data, difficulty=form.difficulty.data))
         db.session.commit()
         flash("Question saved.", "success")
         return redirect(url_for("main.admin_quiz"))

@@ -48,7 +48,56 @@ $env:SECRET_KEY="change-this-in-production"
 python run.py
 ```
 
-Open `http://127.0.0.1:5000`.
+When you run `python run.py` or `python app.py`, the terminal prints:
+
+```text
+Server Running:
+Local: printed in terminal
+Network: http://<local-ip>:5000
+```
+
+Open the app in a desktop browser with the Local URL or on a phone connected to the same Wi-Fi with the Network URL printed in the terminal.
+
+## Mobile Testing on Same Wi-Fi
+
+1. Connect your computer and phone to the same Wi-Fi network.
+2. Start the Flask app:
+
+```powershell
+python run.py
+```
+
+3. Find your computer's local IP address.
+
+Windows:
+
+```powershell
+ipconfig
+```
+
+Look for `IPv4 Address`, for example `192.168.1.25`.
+
+Linux:
+
+```bash
+ip addr
+```
+
+Look for your Wi-Fi interface address, usually starting with `192.168.x.x` or `10.x.x.x`.
+
+4. On your phone browser, open the Network URL printed in the terminal:
+
+```text
+http://<local-ip>:5000
+```
+
+Example:
+
+```text
+http://192.168.1.25:5000
+```
+
+If it does not open, allow Python/Flask through Windows Firewall and confirm both devices are on the same Wi-Fi.
 
 Default admin:
 
@@ -109,6 +158,10 @@ The app uses CSRF protection, password hashing, SQLAlchemy parameterized queries
 pytest
 ```
 
+## Database Migrations
+
+Schema changes are documented in `migrations/`. The app also runs a lightweight SQLite-safe schema check on startup for the quiz `difficulty` column and creates the quiz history table with SQLAlchemy.
+
 ## Deployment
 
 Use `wsgi:app` as the WSGI entrypoint. On Render or Railway, set:
@@ -116,6 +169,7 @@ Use `wsgi:app` as the WSGI entrypoint. On Render or Railway, set:
 ```text
 SECRET_KEY=<strong random secret>
 DATABASE_URL=sqlite:///cyber_suraksha.db
+FLASK_ENV=production
 ```
 
 For PythonAnywhere, create a web app, install requirements in a virtualenv, and point WSGI to `wsgi.py`.

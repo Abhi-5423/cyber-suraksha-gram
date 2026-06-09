@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="container py-5">
-  <h1>Top Awareness Champions</h1>
+  <h1>Top 10 Awareness Champions</h1>
   <div class="table-responsive"><table class="table align-middle">
     <thead><tr><th>Rank</th><th>Name</th><th>Village</th><th>Score</th><th>Badge</th></tr></thead>
     <tbody>{% for user in users %}<tr><td>{{ loop.index }}</td><td>{{ user.full_name }}</td><td>{{ user.village }}</td><td>{{ user.score }}</td><td>{% if user.score >= 80 %}Champion{% elif user.score >= 60 %}Star{% else %}Learner{% endif %}</td></tr>{% endfor %}</tbody>

@@ -1,4 +1,5 @@
 from . import db
+from .forms import DIFFICULTIES, QUIZ_CATEGORIES
 from .models import AwarenessArticle, QuizQuestion, User
 
 AWARENESS = [
@@ -12,18 +13,19 @@ AWARENESS = [
     ("Social Media Scam", "Social Media", "Fraudsters create fake profiles, jobs and marketplace listings.\nReal Example: Fake page sells phones at huge discount.\nWarning Signs: advance payment, no address, copied images.\nSafety Tips: Use trusted marketplaces and cash on delivery when possible.\nRecovery Steps: Report profile and payment trail."),
 ]
 
-CATEGORIES = ["UPI", "OTP", "Banking", "Social Media", "Mobile Security", "Passwords", "Digital Payments"]
+CATEGORIES = [value for value, _label in QUIZ_CATEGORIES]
+DIFFICULTY_VALUES = [value for value, _label in DIFFICULTIES]
 QUESTION_BANK = [
-    ("When receiving money through UPI, what should you do with your PIN?", "Enter it quickly", "Share it with sender", "Never enter PIN to receive money", "Send screenshot", "C", "UPI"),
-    ("A stranger asks for OTP to unblock your bank account. What is safest?", "Share OTP", "Share half OTP", "Refuse and call official bank number", "Forward OTP to friend", "C", "OTP"),
-    ("Which URL is safer for official cybercrime reporting in India?", "random-help.xyz", "cybercrime.gov.in", "quickrefund.click", "bank-kyc.top", "B", "Banking"),
-    ("What should you do before sending money to a new UPI ID?", "Ignore name", "Verify receiver name", "Send test OTP", "Disable SMS", "B", "Digital Payments"),
-    ("A QR code is sent to receive payment. What is likely?", "Normal always", "May make you pay", "Improves network", "Updates Aadhaar", "B", "UPI"),
-    ("Which password is strongest?", "12345678", "village123", "Ravi@1990", "Long unique passphrase with symbols", "D", "Passwords"),
-    ("What is a warning sign of fake loan apps?", "RBI lender details", "Written agreement", "Upfront fee and contact access", "Known bank branch", "C", "Mobile Security"),
-    ("If money is lost in cyber fraud, first call:", "1930", "1000", "12345", "Bank ad number", "A", "Banking"),
-    ("What should you do with unknown WhatsApp job links?", "Click all", "Pay joining fee", "Verify company independently", "Share Aadhaar", "C", "Social Media"),
-    ("KYC should be done through:", "Unknown link", "Remote access app", "Official app or branch", "Social media chat", "C", "Banking"),
+    ("When receiving money through UPI, what should you do with your PIN?", "Enter it quickly", "Share it with sender", "Never enter PIN to receive money", "Send screenshot", "C", "UPI Safety", "Beginner"),
+    ("A stranger asks for OTP to unblock your bank account. What is safest?", "Share OTP", "Share half OTP", "Refuse and call official bank number", "Forward OTP to friend", "C", "OTP Fraud", "Beginner"),
+    ("Which URL is safer for official cybercrime reporting in India?", "random-help.xyz", "cybercrime.gov.in", "quickrefund.click", "bank-kyc.top", "B", "Banking Security", "Beginner"),
+    ("What should you do before sending money to a new UPI ID?", "Ignore name", "Verify receiver name", "Send test OTP", "Disable SMS", "B", "UPI Safety", "Intermediate"),
+    ("A QR code is sent to receive payment. What is likely?", "Normal always", "May make you pay", "Improves network", "Updates Aadhaar", "B", "UPI Safety", "Intermediate"),
+    ("Which password is strongest?", "12345678", "village123", "Ravi@1990", "Long unique passphrase with symbols", "D", "Mobile Security", "Beginner"),
+    ("What is a warning sign of fake loan apps?", "RBI lender details", "Written agreement", "Upfront fee and contact access", "Known bank branch", "C", "Mobile Security", "Intermediate"),
+    ("If money is lost in cyber fraud, first call:", "1930", "1000", "12345", "Bank ad number", "A", "Banking Security", "Beginner"),
+    ("What should you do with unknown WhatsApp job links?", "Click all", "Pay joining fee", "Verify company independently", "Share Aadhaar", "C", "Social Media Security", "Intermediate"),
+    ("KYC should be done through:", "Unknown link", "Remote access app", "Official app or branch", "Social media chat", "C", "Banking Security", "Advanced"),
 ]
 
 
@@ -31,12 +33,29 @@ def _expanded_questions():
     questions = []
     for idx in range(50):
         base = QUESTION_BANK[idx % len(QUESTION_BANK)]
-        q, a, b, c, d, correct, category = base
+        q, a, b, c, d, correct, category, difficulty = base
         if idx < len(QUESTION_BANK):
             questions.append(base)
         else:
-            questions.append((f"{q} Scenario {idx + 1}", a, b, c, d, correct, CATEGORIES[idx % len(CATEGORIES)] if category not in CATEGORIES else category))
+            questions.append((f"{q} Scenario {idx + 1}", a, b, c, d, correct, CATEGORIES[idx % len(CATEGORIES)], DIFFICULTY_VALUES[idx % len(DIFFICULTY_VALUES)]))
     return questions
+
+
+def _normalize_existing_questions():
+    category_map = {
+        "UPI": "UPI Safety",
+        "Digital Payments": "UPI Safety",
+        "OTP": "OTP Fraud",
+        "Banking": "Banking Security",
+        "Social Media": "Social Media Security",
+        "Passwords": "Mobile Security",
+    }
+    for idx, question in enumerate(QuizQuestion.query.order_by(QuizQuestion.id).all()):
+        question.category = category_map.get(question.category, question.category)
+        if question.category not in CATEGORIES:
+            question.category = CATEGORIES[idx % len(CATEGORIES)]
+        if not getattr(question, "difficulty", None) or question.difficulty not in DIFFICULTY_VALUES:
+            question.difficulty = DIFFICULTY_VALUES[idx % len(DIFFICULTY_VALUES)]
 
 
 def seed_database():
@@ -60,7 +79,9 @@ def seed_database():
 
     if QuizQuestion.query.count() < 50:
         QuizQuestion.query.delete()
-        for q, a, b, c, d, correct, category in _expanded_questions():
-            db.session.add(QuizQuestion(question=q, option_a=a, option_b=b, option_c=c, option_d=d, correct_answer=correct, category=category))
+        for q, a, b, c, d, correct, category, difficulty in _expanded_questions():
+            db.session.add(QuizQuestion(question=q, option_a=a, option_b=b, option_c=c, option_d=d, correct_answer=correct, category=category, difficulty=difficulty))
+    else:
+        _normalize_existing_questions()
 
     db.session.commit()

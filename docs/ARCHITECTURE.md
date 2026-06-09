@@ -4,9 +4,11 @@
 
 User: id, full_name, email, password_hash, village, district, language, score, role, created_at.
 
-QuizQuestion: id, question, option_a, option_b, option_c, option_d, correct_answer, category.
+QuizQuestion: id, question, option_a, option_b, option_c, option_d, correct_answer, category, difficulty.
 
 QuizResult: id, user_id, score, date.
+
+UserQuestionHistory: id, user_id, question_id, attempted_at.
 
 ScamReport: id, message, risk_score, risk_level, analysis, created_at.
 
@@ -26,7 +28,7 @@ Home, about, cyber fraud explainer, awareness cards, scam checker, quiz, dashboa
 
 ## User Flows
 
-Citizen registers, selects language, learns from awareness cards, checks suspicious messages, takes quiz, downloads certificate, asks assistant and uses emergency help.
+Citizen registers, selects language, learns from awareness cards, checks suspicious messages, takes randomized quizzes with category/difficulty filters, downloads certificate, asks assistant and uses emergency help.
 
 Volunteer logs in, manages awareness articles and quiz questions, reviews scam reports and analytics.
 

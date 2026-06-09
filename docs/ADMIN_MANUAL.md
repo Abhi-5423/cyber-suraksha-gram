@@ -6,7 +6,7 @@ Dashboard analytics show users, fraud checks, quiz participation, articles and t
 
 Articles can be added from `/admin/articles` in English, Hindi, Bhojpuri or Maithili.
 
-Quiz questions can be added from `/admin/quiz`.
+Quiz questions can be added from `/admin/quiz` with category and difficulty metadata.
 
 Scam reports can be reviewed from `/admin/reports`.
 

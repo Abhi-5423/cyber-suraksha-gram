@@ -13,7 +13,7 @@
             },
             "justMyCode": true,
             "serverReadyAction": {
-                "pattern": "Running on (http://127.0.0.1:5000)",
+                "pattern": "Local: (http://127.0.0.1:5000)",
                 "uriFormat": "%s",
                 "action": "openExternally"
             }

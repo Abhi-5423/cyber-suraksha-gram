@@ -116,7 +116,8 @@ def test_admin_quiz_post_stores_question(client, app):
             "option_c": "Village name",
             "option_d": "Bus route",
             "correct_answer": "A",
-            "category": "OTP",
+            "category": "OTP Fraud",
+            "difficulty": "Beginner",
         },
         follow_redirects=True,
     )

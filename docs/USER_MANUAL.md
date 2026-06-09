@@ -4,7 +4,7 @@ Use Awareness to learn about UPI, OTP, KYC, QR, loan app, government scheme, Wha
 
 Use Scam Checker to paste SMS, WhatsApp or email text. The platform shows a risk meter, score, detected threats and recommendations.
 
-Use Quiz to answer cyber awareness questions. Your best score appears on the dashboard and leaderboard.
+Use Quiz to answer 10 randomized cyber awareness questions. You can filter by UPI Safety, OTP Fraud, Banking Security, Social Media Security, or Mobile Security, and choose Beginner, Intermediate, or Advanced difficulty. Your quiz attempts, average score, and best score appear on the dashboard.
 
 Use Certificate from the dashboard to download a PDF awareness certificate.
 
