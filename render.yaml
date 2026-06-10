@@ -8,6 +8,8 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:///cyber_suraksha.db
+        value: sqlite:////tmp/cyber_suraksha.db
+      - key: FLASK_ENV
+        value: production
       - key: RATELIMIT_STORAGE_URI
         value: memory://

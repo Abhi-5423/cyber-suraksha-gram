@@ -52,11 +52,11 @@ When you run `python run.py` or `python app.py`, the terminal prints:
 
 ```text
 Server Running:
-Local: printed in terminal
-Network: http://<local-ip>:5000
+Local: http://127.0.0.1:5000
+Public: https://<your-deployment-url>
 ```
 
-Open the app in a desktop browser with the Local URL or on a phone connected to the same Wi-Fi with the Network URL printed in the terminal.
+Open the app locally with the Local URL during development. After deployment, open the hosted Public URL such as `https://cyber-suraksha-gram.onrender.com`.
 
 ## Mobile Testing on Same Wi-Fi
 
@@ -85,7 +85,7 @@ ip addr
 
 Look for your Wi-Fi interface address, usually starting with `192.168.x.x` or `10.x.x.x`.
 
-4. On your phone browser, open the Network URL printed in the terminal:
+4. On your phone browser, open the Network URL printed in the terminal for local Wi-Fi testing, or use the hosted deployment URL after publishing:
 
 ```text
 http://<local-ip>:5000
@@ -95,6 +95,12 @@ Example:
 
 ```text
 http://192.168.1.25:5000
+```
+
+Deployed example:
+
+```text
+https://cyber-suraksha-gram.onrender.com
 ```
 
 If it does not open, allow Python/Flask through Windows Firewall and confirm both devices are on the same Wi-Fi.

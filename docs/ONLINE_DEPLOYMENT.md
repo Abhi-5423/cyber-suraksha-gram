@@ -19,6 +19,16 @@ DATABASE_URL=<managed database url>
 FLASK_ENV=production
 ```
 
+If you deploy from the included `render.yaml`, Render will generate `SECRET_KEY` and set the other env vars automatically. If you deploy manually, add the same values in the dashboard.
+
+After deployment, Render will give you a public HTTPS URL like:
+
+```text
+https://cyber-suraksha-gram.onrender.com
+```
+
+Open that URL on desktop or mobile instead of `127.0.0.1`.
+
 The included `render.yaml` can also be used as a Render Blueprint.
 
 ## Railway
@@ -38,6 +48,8 @@ SECRET_KEY=<strong random secret>
 DATABASE_URL=<managed database url>
 FLASK_ENV=production
 ```
+
+After deployment, Railway will provide a public HTTPS URL for your service. Use that URL on your browser or phone rather than `127.0.0.1`.
 
 Railway CLI option:
 
@@ -59,6 +71,8 @@ pip install -r requirements.txt
 4. In the PythonAnywhere Web tab, set the WSGI file to import the app from `wsgi.py`.
 5. Set environment variables such as `SECRET_KEY`.
 6. Set `DATABASE_URL` and `FLASK_ENV=production` for hosted deployments.
+
+After deployment, open the PythonAnywhere public site URL shown in the Web tab.
 
 ## Important Production Notes
 

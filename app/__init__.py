@@ -28,12 +28,6 @@ def _select_config_class():
 
 def create_app(config_class=None):
     config_class = config_class or _select_config_class()
-    if config_class is ProductionConfig:
-        missing = [key for key in ("SECRET_KEY", "DATABASE_URL") if not os.environ.get(key)]
-        if missing:
-            raise RuntimeError(
-                "Missing production environment variables: " + ", ".join(missing)
-            )
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)

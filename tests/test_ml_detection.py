@@ -1,3 +1,6 @@
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 from app.services import ml_scam_detector
 from app.services.ml_scam_detector import load_training_rows, normalize_text, predict_scam, train_classifier
 
@@ -14,27 +17,30 @@ def test_load_training_rows_reads_seed_dataset():
     assert {"fraud", "safe"} <= {row["label"] for row in rows}
 
 
-def test_predict_scam_without_model_is_safe(monkeypatch, tmp_path):
-    monkeypatch.setattr(ml_scam_detector, "MODEL_PATH", tmp_path / "missing.joblib")
-    result = predict_scam("urgent otp click link")
-    assert result["available"] is False
-    assert result["label"] == "unknown"
+def test_predict_scam_without_model_is_safe(monkeypatch):
+    with TemporaryDirectory() as temp_dir:
+        model_path = Path(temp_dir) / "missing.joblib"
+        monkeypatch.setattr(ml_scam_detector, "MODEL_PATH", model_path)
+        result = predict_scam("urgent otp click link")
+        assert result["available"] is False
+        assert result["label"] == "unknown"
 
 
-def test_train_classifier_and_predict_with_temp_model(monkeypatch, tmp_path):
+def test_train_classifier_and_predict_with_temp_model(monkeypatch):
     pytest = __import__("pytest")
     pytest.importorskip("sklearn")
     pytest.importorskip("joblib")
 
-    model_path = tmp_path / "model.joblib"
-    metrics = train_classifier(model_path=model_path)
-    assert model_path.exists()
-    assert metrics["rows"] >= 20
+    with TemporaryDirectory() as temp_dir:
+        model_path = Path(temp_dir) / "model.joblib"
+        metrics = train_classifier(model_path=model_path)
+        assert model_path.exists()
+        assert metrics["rows"] >= 20
 
-    monkeypatch.setattr(ml_scam_detector, "MODEL_PATH", model_path)
-    fraud = predict_scam("Urgent KYC OTP click http://fake.xyz")
-    safe = predict_scam("Cyber awareness meeting at village office")
-    assert fraud["available"] is True
-    assert fraud["label"] in {"fraud", "safe"}
-    assert 0 <= fraud["confidence"] <= 100
-    assert safe["available"] is True
+        monkeypatch.setattr(ml_scam_detector, "MODEL_PATH", model_path)
+        fraud = predict_scam("Urgent KYC OTP click http://fake.xyz")
+        safe = predict_scam("Cyber awareness meeting at village office")
+        assert fraud["available"] is True
+        assert fraud["label"] in {"fraud", "safe"}
+        assert 0 <= fraud["confidence"] <= 100
+        assert safe["available"] is True
