@@ -12,6 +12,7 @@ Rural Cyber Fraud Awareness & Protection Platform built with Flask, SQLite, SQLA
 - Fraud reporting wizard with evidence upload and recovery guidance.
 - QR scam awareness center at `/qr-safety` and success stories at `/stories`.
 - English and Hindi language support with guest `localStorage` and logged-in database preference.
+- 3D branding with model-viewer GLB logos, WebP fallback, favicon set, branded splash screen, Open Graph preview and PDF certificate watermark.
 
 ## Project Structure
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cyber Suraksha Gram watermark">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#22c55e"/></linearGradient></defs>
+  <path d="M256 28 438 94v132c0 116-74 220-182 258C148 446 74 342 74 226V94L256 28Z" fill="none" stroke="url(#g)" stroke-width="26"/>
+  <path d="M174 236h164v150H174z" fill="none" stroke="#0ea5e9" stroke-width="24" rx="18"/>
+  <path d="M206 236v-42a50 50 0 0 1 100 0v42" fill="none" stroke="#22c55e" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="256" cy="308" r="20" fill="#0ea5e9"/>
+  <path d="M126 394h260M150 394v-44l38-28 38 28v44M286 394v-58l44-34 44 34v58" fill="none" stroke="#22c55e" stroke-width="16" stroke-linejoin="round"/>
+</svg>

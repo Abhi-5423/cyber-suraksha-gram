@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% from "partials/brand_logo.html" import brand_logo %}
+{% block content %}
+<section class="container py-5 narrow text-center">
+  <div class="auth-brand mb-4">{{ brand_logo("auth") }}</div>
+  <h1>{{ code }}</h1>
+  <p class="lead">{{ message }}</p>
+  <a class="btn btn-success" href="{{ url_for('main.home') }}">{{ tr("app_name") }}</a>
+</section>
+{% endblock %}

@@ -22,12 +22,28 @@ if (langSelect) {
 const darkToggle = document.getElementById("darkToggle");
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme === "dark") document.body.classList.add("dark");
+const syncBrandModels = () => {
+  const dark = document.body.classList.contains("dark");
+  document.querySelectorAll("model-viewer[data-dark-src]").forEach((model) => {
+    const nextSrc = dark ? model.dataset.darkSrc : model.dataset.lightSrc;
+    if (nextSrc && model.getAttribute("src") !== nextSrc) model.setAttribute("src", nextSrc);
+  });
+};
+syncBrandModels();
 if (darkToggle) {
   darkToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
     localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    syncBrandModels();
   });
 }
+
+document.querySelectorAll("model-viewer").forEach((model) => {
+  model.addEventListener("error", () => model.classList.add("model-failed"));
+});
+window.addEventListener("load", () => {
+  setTimeout(() => document.getElementById("brandSplash")?.remove(), 2600);
+});
 
 document.querySelectorAll("[data-count]").forEach((element) => {
   const target = Number(element.dataset.count || 0);

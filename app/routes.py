@@ -719,8 +719,12 @@ def manifest():
         "start_url": "/",
         "display": "standalone",
         "background_color": "#f8fafc",
-        "theme_color": "#0f766e",
-        "icons": [],
+        "theme_color": "#03142e",
+        "icons": [
+            {"src": url_for("static", filename="images/favicon-16x16.png"), "sizes": "16x16", "type": "image/png"},
+            {"src": url_for("static", filename="images/favicon-32x32.png"), "sizes": "32x32", "type": "image/png"},
+            {"src": url_for("static", filename="images/logo-preview.webp"), "sizes": "512x512", "type": "image/webp"},
+        ],
     })
 
 

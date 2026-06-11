@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% from "partials/brand_logo.html" import brand_logo with context %}
 {% block content %}
 <section class="container py-5">
+  <div class="dashboard-brand mb-4">{{ brand_logo("panel") }}</div>
   <h1>{{ tr("dashboard") }}</h1>
   <div class="row g-3">
     <div class="col-md-3"><div class="metric"><span>{{ total_quizzes }}</span><small>{{ tr("total_quizzes_attempted") }}</small></div></div>

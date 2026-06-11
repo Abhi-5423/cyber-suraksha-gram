@@ -1,0 +1,22 @@
+{% macro brand_logo(size="nav", label=True, splash=False) -%}
+<span class="brand-logo brand-logo-{{ size }}{% if splash %} brand-logo-splash{% endif %}" data-brand-logo>
+  <model-viewer
+    class="brand-model"
+    src="{{ url_for('static', filename='images/logo-3d.glb') }}"
+    data-dark-src="{{ url_for('static', filename='images/logo-dark.glb') }}"
+    data-light-src="{{ url_for('static', filename='images/logo-light.glb') }}"
+    poster="{{ url_for('static', filename='images/logo-preview.webp') }}"
+    camera-controls
+    auto-rotate
+    rotation-per-second="24deg"
+    interaction-prompt="none"
+    exposure="1.15"
+    shadow-intensity="0.45"
+    loading="lazy"
+    reveal="auto"
+    alt="{{ tr('app_name') }} logo">
+    <img class="brand-fallback" src="{{ url_for('static', filename='images/logo-preview.webp') }}" alt="{{ tr('app_name') }} logo">
+  </model-viewer>
+  {% if label %}<span class="brand-wordmark">{{ tr("app_name") }}</span>{% endif %}
+</span>
+{%- endmacro %}

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
@@ -63,12 +63,20 @@ def create_app(config_class=None):
     @app.errorhandler(400)
     def bad_request(error):
         if isinstance(error, BadRequest) and "CSRF" in str(error.description):
-            return "Bad request: invalid or missing CSRF token.", 400
-        return "Bad request.", 400
+            return render_template("error.html", code=400, message="Bad request: invalid or missing CSRF token."), 400
+        return render_template("error.html", code=400, message="Bad request."), 400
 
     @app.errorhandler(403)
     def forbidden(_error):
-        return "Forbidden.", 403
+        return render_template("error.html", code=403, message="Forbidden."), 403
+
+    @app.errorhandler(404)
+    def not_found(_error):
+        return render_template("error.html", code=404, message="Page not found."), 404
+
+    @app.errorhandler(500)
+    def server_error(_error):
+        return render_template("error.html", code=500, message="Server error."), 500
 
     with app.app_context():
         db.create_all()
