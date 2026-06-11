@@ -1,16 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="container py-5">
-  <h1>Dashboard</h1>
+  <h1>{{ tr("dashboard") }}</h1>
   <div class="row g-3">
-    <div class="col-md-3"><div class="metric"><span>{{ total_quizzes }}</span><small>Total Quizzes Attempted</small></div></div>
-    <div class="col-md-3"><div class="metric"><span>{{ average_score }}</span><small>Average Score</small></div></div>
-    <div class="col-md-3"><div class="metric"><span>{{ best_score }}</span><small>Best Score</small></div></div>
-    <div class="col-md-3"><a class="metric link-metric" href="{{ url_for('main.certificate') }}"><span>PDF</span><small>Download Certificate</small></a></div>
+    <div class="col-md-3"><div class="metric"><span>{{ total_quizzes }}</span><small>{{ tr("total_quizzes_attempted") }}</small></div></div>
+    <div class="col-md-3"><div class="metric"><span>{{ average_score }}</span><small>{{ tr("average_score") }}</small></div></div>
+    <div class="col-md-3"><div class="metric"><span>{{ best_score }}</span><small>{{ tr("best_score") }}</small></div></div>
+    <div class="col-md-3"><div class="metric"><span>{{ risk_checks }}</span><small>{{ tr("risk_checks_performed") }}</small></div></div>
+    <div class="col-md-3"><div class="metric"><span>{{ current_user.xp_points }}</span><small>{{ tr("xp_points") }}</small></div></div>
+    <div class="col-md-3"><div class="metric"><span>{{ rank }}</span><small>{{ tr("rank_title") }}</small></div></div>
+    <div class="col-md-3"><div class="metric"><span>{{ current_user.challenge_streak }}</span><small>{{ tr("challenge_streak") }}</small></div></div>
+    <div class="col-md-3"><a class="metric link-metric" href="{{ url_for('main.certificate') }}"><span>PDF</span><small>{{ tr("download_certificate") }}</small></a></div>
+  </div>
+  <div class="tool-panel mt-4">
+    <h2>{{ tr("progress_chart") }}</h2>
+    <canvas id="scoreChart" data-scores='{{ chart_scores|tojson }}' height="100"></canvas>
   </div>
   <div class="row g-4 mt-2">
-    <div class="col-lg-6"><h2>Recently Attempted Quizzes</h2>{% for r in results %}<p class="list-line">{{ r.score }}/100 on {{ r.date.date() }}</p>{% else %}<p>No quiz results yet.</p>{% endfor %}</div>
-    <div class="col-lg-6"><h2>Recent Assistant Chats</h2>{% for c in chats %}<p class="list-line">{{ c.message }} - {{ c.response }}</p>{% else %}<p>No chat history yet.</p>{% endfor %}</div>
+    <div class="col-lg-6">
+      <h2>{{ tr("learning_path") }}</h2>
+      {% for item in learning %}
+      <div class="mb-3">
+        <div class="d-flex justify-content-between"><strong>{{ tr(item.level|lower) }}</strong><span>{{ item.completion_percent }}%</span></div>
+        <div class="progress"><div class="progress-bar bg-success" style="width: {{ item.completion_percent }}%"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="col-lg-6">
+      <h2>{{ tr("achievements") }}</h2>
+      {% for earned in achievements %}<p class="list-line"><strong>{{ earned.achievement.title }}</strong><br>{{ earned.achievement.description }}</p>{% else %}<p>{{ tr("no_achievements") }}</p>{% endfor %}
+    </div>
+  </div>
+  <div class="row g-4 mt-2">
+    <div class="col-lg-6">
+      <h2>{{ tr("recent_quizzes") }}</h2>
+      {% for r in results %}<p class="list-line">{{ r.score }}/100 {{ tr("on_date") }} {{ r.date.date() }}</p>{% else %}<p>{{ tr("no_quiz_results") }}</p>{% endfor %}
+    </div>
+    <div class="col-lg-6">
+      <h2>{{ tr("recent_chats") }}</h2>
+      {% for c in chats %}<p class="list-line">{{ c.message }} - {{ c.response }}</p>{% else %}<p>{{ tr("no_chat_history") }}</p>{% endfor %}
+    </div>
   </div>
 </section>
 {% endblock %}

@@ -1,13 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="container py-5 narrow">
-  <h1>Report Fraud</h1>
+  <h1>{{ tr("report_fraud") }}</h1>
   <form method="post" class="tool-panel">
     {{ form.hidden_tag() }}
-    {{ form.message.label(class="form-label") }}{{ form.message(class="form-control", rows=7) }}
-    {{ form.contact.label(class="form-label mt-3") }}{{ form.contact(class="form-control") }}
-    {{ form.submit(class="btn btn-success mt-3") }}
+    <div class="wizard-step"><span>{{ tr("step_1") }}</span><label class="form-label" for="{{ form.fraud_type.id }}">{{ tr("select_fraud_type") }}</label>{{ form.fraud_type(class="form-select") }}</div>
+    <div class="wizard-step"><span>{{ tr("step_2") }}</span><label class="form-label" for="{{ form.message.id }}">{{ tr("describe_incident") }}</label>{{ form.message(class="form-control", rows=7) }}</div>
+    <div class="wizard-step"><span>{{ tr("step_3") }}</span><label class="form-label" for="{{ form.screenshot.id }}">{{ tr("upload_evidence") }}</label>{{ form.screenshot(class="form-control", accept="image/*") }}</div>
+    <div class="wizard-step"><span>{{ tr("step_4") }}</span><label class="form-label" for="{{ form.contact.id }}">{{ tr("phone_or_email") }}</label>{{ form.contact(class="form-control") }}</div>
+    <button class="btn btn-success mt-3" type="submit">{{ tr("prepare_report") }}</button>
   </form>
-  {% if prepared %}<div class="alert alert-info mt-3">Call {{ prepared.helpline }} and file at {{ prepared.portal }}. Summary prepared: {{ prepared.details }}</div>{% endif %}
+  {% if prepared %}
+  <div class="alert alert-info mt-3">
+    <strong>{{ tr("recovery_guidance") }}:</strong> {{ prepared.guidance }}<br>
+    {{ tr("report_prepared", helpline=prepared.helpline, portal=prepared.portal, details=prepared.details) }}
+  </div>
+  {% endif %}
 </section>
 {% endblock %}

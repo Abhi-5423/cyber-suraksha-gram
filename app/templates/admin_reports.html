@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="container py-5">
-  <h1>Scam Reports</h1>
+  <h1>{{ tr("scam_reports") }}</h1>
   <div class="table-responsive"><table class="table">
-    <thead><tr><th>Date</th><th>Risk</th><th>Score</th><th>Message</th></tr></thead>
+    <thead><tr><th>{{ tr("date") }}</th><th>{{ tr("risk") }}</th><th>{{ tr("score") }}</th><th>{{ tr("message") }}</th></tr></thead>
     <tbody>{% for report in reports %}<tr><td>{{ report.created_at.date() }}</td><td>{{ report.risk_level }}</td><td>{{ report.risk_score }}</td><td>{{ report.message }}</td></tr>{% endfor %}</tbody>
   </table></div>
 </section>

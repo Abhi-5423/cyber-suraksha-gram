@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>{{ tr("success_stories") }}</h1>
+  <div class="row g-3">
+    <div class="col-md-6"><article class="info-card h-100"><h2>{{ tr("story_1_title") }}</h2><p>{{ tr("story_1_body") }}</p></article></div>
+    <div class="col-md-6"><article class="info-card h-100"><h2>{{ tr("story_2_title") }}</h2><p>{{ tr("story_2_body") }}</p></article></div>
+  </div>
+</section>
+{% endblock %}

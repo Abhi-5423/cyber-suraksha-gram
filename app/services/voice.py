@@ -42,7 +42,7 @@ def synthesize_speech(text, language="en"):
             "error": "gTTS is not installed. Run python -m pip install -r requirements.txt.",
         }
 
-    lang = "hi" if language in {"hi", "bho", "mai"} else "en"
+    lang = "hi" if language == "hi" else "en"
     try:
         audio = BytesIO()
         gTTS(text=value, lang=lang).write_to_fp(audio)

@@ -4,7 +4,7 @@ from wtforms import EmailField, PasswordField, SelectField, StringField, SubmitF
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 
-LANGUAGES = [("en", "English"), ("hi", "Hindi"), ("bho", "Bhojpuri"), ("mai", "Maithili")]
+LANGUAGES = [("en", "English"), ("hi", "हिन्दी")]
 ROLES = [("citizen", "Village Citizen"), ("volunteer", "Awareness Volunteer"), ("admin", "Administrator")]
 QUIZ_CATEGORIES = [
     ("UPI Safety", "UPI Safety"),
@@ -17,6 +17,22 @@ DIFFICULTIES = [
     ("Beginner", "Beginner"),
     ("Intermediate", "Intermediate"),
     ("Advanced", "Advanced"),
+]
+ALERT_CATEGORIES = [
+    ("UPI Scam", "UPI Scam"),
+    ("Fake KYC", "Fake KYC"),
+    ("QR Scam", "QR Scam"),
+    ("Loan App", "Loan App"),
+    ("Phishing", "Phishing"),
+]
+ALERT_SEVERITIES = [("Low", "Low"), ("Medium", "Medium"), ("High", "High")]
+FRAUD_TYPES = [
+    ("UPI Fraud", "UPI Fraud"),
+    ("OTP Fraud", "OTP Fraud"),
+    ("Fake KYC", "Fake KYC"),
+    ("QR Scam", "QR Scam"),
+    ("Loan App Fraud", "Loan App Fraud"),
+    ("Social Media Fraud", "Social Media Fraud"),
 ]
 
 
@@ -59,6 +75,15 @@ class ArticleForm(FlaskForm):
     submit = SubmitField("Save Article")
 
 
+class AlertForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired(), Length(max=160)])
+    category = SelectField("Category", choices=ALERT_CATEGORIES)
+    severity = SelectField("Severity", choices=ALERT_SEVERITIES)
+    language = SelectField("Language", choices=LANGUAGES)
+    content = TextAreaField("Content", validators=[DataRequired(), Length(min=20, max=2500)])
+    submit = SubmitField("Publish Alert")
+
+
 class QuizQuestionForm(FlaskForm):
     question = TextAreaField("Question", validators=[DataRequired(), Length(min=10, max=1000)])
     option_a = StringField("Option A", validators=[DataRequired(), Length(max=255)])
@@ -77,6 +102,11 @@ class UserRoleForm(FlaskForm):
 
 
 class ReportFraudForm(FlaskForm):
+    fraud_type = SelectField("Fraud Type", choices=FRAUD_TYPES)
     message = TextAreaField("Incident details", validators=[DataRequired(), Length(min=20, max=2000)])
+    screenshot = FileField(
+        "Upload Screenshot",
+        validators=[FileAllowed(["jpg", "jpeg", "png", "webp", "bmp"], "Images only.")],
+    )
     contact = StringField("Phone or email", validators=[Optional(), Length(max=120)])
     submit = SubmitField("Prepare Report")

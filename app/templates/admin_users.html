@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="container py-5">
-  <h1>Users</h1>
+  <h1>{{ tr("users") }}</h1>
   <div class="table-responsive"><table class="table align-middle">
-    <thead><tr><th>Name</th><th>Email</th><th>Village</th><th>Score</th><th>Role</th><th>Action</th></tr></thead>
+    <thead><tr><th>{{ tr("name") }}</th><th>{{ tr("email") }}</th><th>{{ tr("village") }}</th><th>{{ tr("score") }}</th><th>{{ tr("role") }}</th><th>{{ tr("action") }}</th></tr></thead>
     <tbody>
     {% for user in users %}
       <tr>
@@ -13,12 +13,12 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="hidden" name="user_id" value="{{ user.id }}">
             <select name="{{ user.id }}-role" class="form-select form-select-sm">
-              {% for value, label in [("citizen","Village Citizen"),("volunteer","Awareness Volunteer"),("admin","Administrator")] %}
-              <option value="{{ value }}" {% if user.role == value %}selected{% endif %}>{{ label }}</option>
+              {% for value, label_key in [("citizen","village_citizen"),("volunteer","awareness_volunteer"),("admin","administrator")] %}
+              <option value="{{ value }}" {% if user.role == value %}selected{% endif %}>{{ tr(label_key) }}</option>
               {% endfor %}
             </select>
         </td>
-        <td><button class="btn btn-outline-success btn-sm">Update</button></form></td>
+        <td><button class="btn btn-outline-success btn-sm">{{ tr("update") }}</button></form></td>
       </tr>
     {% endfor %}
     </tbody>

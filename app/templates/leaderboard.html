@@ -1,10 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="container py-5">
-  <h1>Top 10 Awareness Champions</h1>
+  <h1>{{ tr("top_champions") }}</h1>
   <div class="table-responsive"><table class="table align-middle">
-    <thead><tr><th>Rank</th><th>Name</th><th>Village</th><th>Score</th><th>Badge</th></tr></thead>
-    <tbody>{% for user in users %}<tr><td>{{ loop.index }}</td><td>{{ user.full_name }}</td><td>{{ user.village }}</td><td>{{ user.score }}</td><td>{% if user.score >= 80 %}Champion{% elif user.score >= 60 %}Star{% else %}Learner{% endif %}</td></tr>{% endfor %}</tbody>
+    <thead><tr><th>{{ tr("rank") }}</th><th>{{ tr("name") }}</th><th>{{ tr("village") }}</th><th>{{ tr("score") }}</th><th>{{ tr("badge") }}</th></tr></thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ user.full_name }}</td>
+        <td>{{ user.village }}</td>
+        <td>{{ user.score }}</td>
+        <td>{% if user.score >= 80 %}{{ tr("champion") }}{% elif user.score >= 60 %}{{ tr("star") }}{% else %}{{ tr("learner") }}{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table></div>
 </section>
 {% endblock %}

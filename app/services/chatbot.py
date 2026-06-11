@@ -9,15 +9,15 @@ KNOWLEDGE = {
     },
     "qr": {
         "en": "Scanning a QR code is normally for paying money, not receiving it. Stop if someone asks you to scan a QR to get payment.",
-        "hi": "QR कोड स्कैन करना आमतौर पर पैसा भेजने के लिए होता है, पाने के लिए नहीं. पैसा पाने के लिए QR स्कैन करने को कहा जाए तो रुकें.",
+        "hi": "QR कोड स्कैन करना आमतौर पर पैसा भेजने के लिए होता है, पैसा पाने के लिए नहीं. भुगतान पाने के लिए QR स्कैन करने को कहा जाए तो रुकें.",
     },
     "kyc": {
         "en": "Do KYC only inside official apps or branches. Do not install screen sharing apps or open links sent by strangers.",
-        "hi": "KYC केवल आधिकारिक ऐप या शाखा में करें. अनजान लिंक न खोलें और screen sharing app इंस्टॉल न करें.",
+        "hi": "KYC केवल आधिकारिक ऐप या शाखा में करें. अनजान लिंक न खोलें और screen sharing ऐप इंस्टॉल न करें.",
     },
     "loan": {
         "en": "Fake loan apps misuse contacts and demand fees. Use RBI-regulated lenders and never pay advance processing charges to strangers.",
-        "hi": "फर्जी loan apps contacts का दुरुपयोग करते हैं और fees मांगते हैं. RBI-regulated lender चुनें और अजनबी को advance fee न दें.",
+        "hi": "फर्जी loan app संपर्कों का दुरुपयोग करते हैं और फीस मांगते हैं. RBI regulated lender चुनें और अजनबी को advance fee न दें.",
     },
     "government": {
         "en": "Check government schemes on official .gov.in websites or local offices. Do not pay to receive benefits.",
@@ -29,12 +29,14 @@ KNOWLEDGE = {
     },
 }
 
+HINDI_EMERGENCY_WORDS = {"पैसा", "मदद", "धोखा", "फ्रॉड", "शिकायत"}
+
 
 def assistant_reply(message, language="en"):
     text = (message or "").lower()
     lang = "hi" if language == "hi" or any("\u0900" <= c <= "\u097f" for c in text) else "en"
     for key, replies in KNOWLEDGE.items():
-        if key in text or (key == "emergency" and any(word in text for word in ["help", "fraud", "lost", "पैसा", "मदद"])):
+        if key in text or (key == "emergency" and (any(word in text for word in ["help", "fraud", "lost"]) or any(word in text for word in HINDI_EMERGENCY_WORDS))):
             return replies[lang]
     return (
         "Ask me about UPI, OTP, QR, KYC, loan app fraud, government scheme fraud, or emergency steps."

@@ -1,4 +1,4 @@
-import json
+﻿import json
 
 from app import db
 from app.config import TestingConfig
@@ -16,6 +16,9 @@ PUBLIC_GET_ROUTES = [
     "/scam-checker",
     "/chatbot",
     "/help",
+    "/alerts",
+    "/qr-safety",
+    "/stories",
     "/leaderboard",
     "/login",
     "/register",
@@ -61,21 +64,21 @@ def test_protected_routes_do_not_expose_to_anonymous_users(client):
         assert response.status_code == 302, route
         assert "/login" in response.headers["Location"]
 
-    for route in ["/admin", "/admin/articles", "/admin/quiz", "/admin/reports", "/admin/users"]:
+    for route in ["/admin", "/admin/articles", "/admin/alerts", "/admin/quiz", "/admin/reports", "/admin/users"]:
         response = client.get(route)
         assert response.status_code == 401, route
 
 
 def test_citizen_cannot_access_admin_routes(client):
     register(client)
-    for route in ["/admin", "/admin/articles", "/admin/quiz", "/admin/reports", "/admin/users"]:
+    for route in ["/admin", "/admin/articles", "/admin/alerts", "/admin/quiz", "/admin/reports", "/admin/users"]:
         response = client.get(route)
         assert response.status_code == 403, route
 
 
 def test_all_admin_routes_render_for_admin(client):
     login_admin(client)
-    for route in ["/admin", "/admin/articles", "/admin/quiz", "/admin/reports", "/admin/users"]:
+    for route in ["/admin", "/admin/articles", "/admin/alerts", "/admin/quiz", "/admin/reports", "/admin/users"]:
         response = client.get(route)
         assert response.status_code == 200, route
 
@@ -145,3 +148,4 @@ def test_services_cover_edge_cases():
 
     result = analyze_message("Visit cybercrime.gov.in for help")
     assert not any(item.get("value") == "cybercrime.gov.in" for item in result["matched_rules"])
+

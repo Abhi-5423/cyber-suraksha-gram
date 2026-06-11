@@ -2,6 +2,17 @@
 
 Rural Cyber Fraud Awareness & Protection Platform built with Flask, SQLite, SQLAlchemy, Flask-Login, WTForms, Bootstrap 5 and JavaScript.
 
+## Platform Features
+
+- Cyber threat intelligence widgets with animated counters.
+- Live scam alert center at `/alerts`, with admin publishing at `/admin/alerts`.
+- AI scam analyzer with OCR screenshot support, risk percentage, threat breakdown and recommended action.
+- Cyber Champion XP, badges, achievements, daily challenge streaks and leaderboard.
+- Interactive dashboard with Chart.js progress charts and learning path progress.
+- Fraud reporting wizard with evidence upload and recovery guidance.
+- QR scam awareness center at `/qr-safety` and success stories at `/stories`.
+- English and Hindi language support with guest `localStorage` and logged-in database preference.
+
 ## Project Structure
 
 ```text
@@ -19,7 +30,7 @@ app/
   static/css/styles.css
   static/js/app.js     Dark mode, counters, PWA, voice assistant
   templates/           Bootstrap 5 responsive pages
-  translations/        English, Hindi, Bhojpuri, Maithili JSON
+  translations/        English and Hindi JSON translation files
 tests/                 Unit, integration, API and security tests
 docs/                  Design and deployment documentation
 ```
@@ -161,7 +172,7 @@ The app uses CSRF protection, password hashing, SQLAlchemy parameterized queries
 ## Tests
 
 ```powershell
-pytest
+python -m pytest
 ```
 
 ## Database Migrations

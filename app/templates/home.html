@@ -4,39 +4,58 @@
   <div class="container">
     <div class="row align-items-center g-4">
       <div class="col-lg-7">
-        <h1>Cyber Suraksha Gram</h1>
-        <p class="lead">Protect Villages From Digital Fraud</p>
+        <h1>{{ tr("app_name") }}</h1>
+        <p class="lead">{{ tr("hero_subtitle") }}</p>
         <div class="d-flex flex-wrap gap-3">
-          <a class="btn btn-success btn-lg" href="{{ url_for('main.scam_checker') }}">Check Scam Message</a>
-          <a class="btn btn-outline-light btn-lg" href="{{ url_for('main.awareness') }}">Learn Cyber Safety</a>
-          <a class="btn btn-warning btn-lg" href="{{ url_for('main.quiz') }}">Take Quiz</a>
+          <a class="btn btn-success btn-lg" href="{{ url_for('main.scam_checker') }}">{{ tr("check_scam_message") }}</a>
+          <a class="btn btn-outline-light btn-lg" href="{{ url_for('main.awareness') }}">{{ tr("learn_cyber_safety") }}</a>
+          <a class="btn btn-warning btn-lg" href="{{ url_for('main.quiz') }}">{{ tr("take_quiz") }}</a>
+          <a class="btn btn-outline-light btn-lg" href="{{ url_for('main.alerts') }}">{{ tr("open_alerts") }}</a>
         </div>
       </div>
       <div class="col-lg-5">
         <div class="stat-grid">
-          <div><span data-count="{{ stats.users }}">0</span><small>Citizens</small></div>
-          <div><span data-count="{{ stats.checks }}">0</span><small>Fraud Checks</small></div>
-          <div><span data-count="{{ stats.quizzes }}">0</span><small>Quizzes</small></div>
-          <div><span data-count="{{ stats.articles }}">0</span><small>Lessons</small></div>
+          <div><span data-count="{{ stats.users }}">0</span><small>{{ tr("citizens") }}</small></div>
+          <div><span data-count="{{ stats.checks }}">0</span><small>{{ tr("fraud_checks") }}</small></div>
+          <div><span data-count="{{ stats.quizzes }}">0</span><small>{{ tr("quizzes") }}</small></div>
+          <div><span data-count="{{ stats.articles }}">0</span><small>{{ tr("lessons") }}</small></div>
         </div>
       </div>
     </div>
   </div>
 </section>
+{% if alerts %}
+<section class="alert-strip">
+  <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">
+    <strong>{{ tr("live_alert_center") }}:</strong>
+    <span>{{ alerts[0].title }}</span>
+    <a class="btn btn-sm btn-light" href="{{ url_for('main.alerts') }}">{{ tr("view_all") }}</a>
+  </div>
+</section>
+{% endif %}
 <section class="container py-5">
-  <div class="section-title"><h2>Awareness Cards</h2><a href="{{ url_for('main.awareness') }}">View all</a></div>
+  <div class="section-title"><h2>{{ tr("threat_intelligence") }}</h2><a href="{{ url_for('main.dashboard') }}">{{ tr("dashboard") }}</a></div>
   <div class="row g-3">
-    {% for name in ["UPI Fraud","OTP Fraud","KYC Fraud","QR Scam","Fake Loan App","Fake Government Scheme","WhatsApp Scam","Social Media Scam"] %}
-    <div class="col-md-3 col-sm-6"><div class="info-card h-100"><h3>{{ name }}</h3><p>Learn warning signs, real examples, safety tips and recovery steps.</p></div></div>
+    <div class="col-md-3"><div class="metric portal-metric"><span data-count="{{ stats.checks }}">0</span><small>{{ tr("fraud_checks") }}</small></div></div>
+    <div class="col-md-3"><div class="metric portal-metric"><span data-count="{{ stats.high_risk }}">0</span><small>{{ tr("high_risk_detected") }}</small></div></div>
+    <div class="col-md-3"><div class="metric portal-metric"><span data-count="{{ stats.champions }}">0</span><small>{{ tr("cyber_champions") }}</small></div></div>
+    <div class="col-md-3"><div class="metric portal-metric"><span data-count="{{ stats.daily_active }}">0</span><small>{{ tr("daily_active_users") }}</small></div></div>
+  </div>
+</section>
+<section class="container py-5">
+  <div class="section-title"><h2>{{ tr("awareness_cards") }}</h2><a href="{{ url_for('main.awareness') }}">{{ tr("view_all") }}</a></div>
+  <div class="row g-3">
+    {% for key in ["upi_fraud","otp_fraud","kyc_fraud","qr_scam","fake_loan_app","fake_government_scheme","whatsapp_scam","social_media_scam"] %}
+    <div class="col-md-3 col-sm-6"><div class="info-card h-100"><h3>{{ tr(key) }}</h3><p>{{ tr("card_summary") }}</p></div></div>
     {% endfor %}
   </div>
 </section>
 <section class="band py-5">
   <div class="container">
-    <div class="section-title"><h2>Latest Cyber Alerts</h2><a href="{{ url_for('main.help_page') }}">Emergency help</a></div>
+    <div class="section-title"><h2>{{ tr("latest_cyber_alerts") }}</h2><a href="{{ url_for('main.help_page') }}">{{ tr("emergency_help") }}</a></div>
     <div class="row g-3">
       {% for alert in alerts %}
-      <div class="col-md-3"><article class="alert-card"><strong>{{ alert.title }}</strong><p>{{ alert.content.split('\n')[0] }}</p></article></div>
+      <div class="col-md-3"><article class="alert-card"><span class="badge text-bg-danger">{{ alert.severity }}</span><strong class="d-block mt-2">{{ alert.title }}</strong><p>{{ alert.content.split('\n')[0] }}</p></article></div>
       {% endfor %}
     </div>
   </div>

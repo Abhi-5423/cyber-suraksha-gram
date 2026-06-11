@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <div class="section-title">
+    <h1>{{ tr("live_alert_center") }}</h1>
+    <a class="btn btn-outline-success" href="{{ url_for('main.scam_checker') }}">{{ tr("check_scam_message") }}</a>
+  </div>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <h2>{{ tr("latest_alerts") }}</h2>
+      {% for alert in alerts %}
+      <article class="alert-card mb-3">
+        <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+          <span class="badge text-bg-danger">{{ alert.severity }}</span>
+          <span class="badge text-bg-success">{{ alert.category }}</span>
+          <small class="text-muted">{{ alert.created_at.date() }}</small>
+        </div>
+        <h3>{{ alert.title }}</h3>
+        <p>{{ alert.content }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <aside class="col-lg-4">
+      <div class="tool-panel">
+        <h2>{{ tr("trending_fraud_types") }}</h2>
+        {% for name, count in trending %}
+        <p class="list-line">{{ name }} <strong>{{ count }}</strong></p>
+        {% endfor %}
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

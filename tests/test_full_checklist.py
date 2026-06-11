@@ -1,4 +1,4 @@
-from app import db
+﻿from app import db
 from app.models import ChatHistory, QuizQuestion, QuizResult, ScamReport, User
 
 
@@ -87,9 +87,9 @@ def test_language_switcher_sets_session_and_page_translates(client):
     assert response.status_code == 200
     assert "जागरूकता".encode("utf-8") in response.data
 
-    response = client.get("/set-language/bho", follow_redirects=True)
+    response = client.get("/set-language/mai", follow_redirects=True)
     assert response.status_code == 200
-    assert "संदेश जांचीं".encode("utf-8") in response.data
+    assert b'value="en" selected' in response.data
 
 
 def test_voice_assistant_chatbot_page_and_storage(client, app):
@@ -137,3 +137,4 @@ def test_admin_panel_access_and_pdf_certificate(client):
     assert pdf.status_code == 200
     assert pdf.headers["content-type"] == "application/pdf"
     assert pdf.data.startswith(b"%PDF")
+

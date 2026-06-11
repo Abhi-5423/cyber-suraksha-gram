@@ -4,7 +4,7 @@ Admins can access `/admin` after login.
 
 Dashboard analytics show users, fraud checks, quiz participation, articles and top scam signals.
 
-Articles can be added from `/admin/articles` in English, Hindi, Bhojpuri or Maithili.
+Articles can be added from `/admin/articles` in English or Hindi.
 
 Quiz questions can be added from `/admin/quiz` with category and difficulty metadata.
 

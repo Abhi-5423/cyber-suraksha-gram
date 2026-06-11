@@ -1,4 +1,4 @@
-from app.models import AwarenessArticle, QuizQuestion, User
+from app.models import AwarenessArticle, DailyChallengeAttempt, FraudIncident, QuizQuestion, ScamAlert, User
 
 
 def login_admin(client):
@@ -47,15 +47,17 @@ def test_logout_route(client):
     assert b"Cyber Suraksha Gram" in response.data
 
 
-def test_report_fraud_post_prepares_guidance(client):
+def test_report_fraud_post_prepares_guidance(client, app):
     response = client.post(
         "/report-fraud",
-        data={"message": "I paid money after receiving a fake KYC call from an unknown person.", "contact": "9999999999"},
+        data={"fraud_type": "Fake KYC", "message": "I paid money after receiving a fake KYC call from an unknown person.", "contact": "9999999999"},
         follow_redirects=True,
     )
     assert response.status_code == 200
     assert b"1930" in response.data
     assert b"cybercrime.gov.in" in response.data
+    with app.app_context():
+        assert FraudIncident.query.filter_by(fraud_type="Fake KYC").first() is not None
 
 
 def test_api_scam_check_rejects_missing_message(client):
@@ -103,6 +105,42 @@ def test_admin_article_post_sanitizes_and_stores(client, app):
         assert article is not None
         assert "<script" not in article.title
         assert "<script" not in article.content
+
+
+def test_admin_alert_post_publishes_alert(client, app):
+    login_admin(client)
+    response = client.post(
+        "/admin/alerts",
+        data={
+            "title": "New QR Warning",
+            "category": "QR Scam",
+            "severity": "High",
+            "language": "en",
+            "content": "Do not scan unknown QR codes to receive money.",
+        },
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert b"Alert published" in response.data
+    with app.app_context():
+        assert ScamAlert.query.filter_by(title="New QR Warning").first() is not None
+
+
+def test_daily_challenge_rewards_correct_answer(client, app):
+    client.post("/register", data=register_payload("challenge@example.com"), follow_redirects=True)
+    page = client.get("/daily-challenge")
+    assert page.status_code == 200
+    with app.app_context():
+        from app.models import DailyChallenge
+
+        challenge = DailyChallenge.query.order_by(DailyChallenge.challenge_date.desc()).first()
+        answer = challenge.correct_answer
+    response = client.post("/daily-challenge", data={"answer": answer}, follow_redirects=True)
+    assert response.status_code == 200
+    with app.app_context():
+        user = User.query.filter_by(email="challenge@example.com").first()
+        assert DailyChallengeAttempt.query.filter_by(user_id=user.id).first() is not None
+        assert user.xp_points >= 25
 
 
 def test_admin_quiz_post_stores_question(client, app):

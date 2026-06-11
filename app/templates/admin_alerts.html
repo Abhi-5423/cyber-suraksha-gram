@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>{{ tr("manage_alerts") }}</h1>
+  <form method="post" class="tool-panel mb-4">
+    {{ form.hidden_tag() }}
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label" for="{{ form.title.id }}">{{ tr("title") }}</label>{{ form.title(class="form-control") }}</div>
+      <div class="col-md-3"><label class="form-label" for="{{ form.category.id }}">{{ tr("category") }}</label>{{ form.category(class="form-select") }}</div>
+      <div class="col-md-3"><label class="form-label" for="{{ form.severity.id }}">{{ tr("severity") }}</label>{{ form.severity(class="form-select") }}</div>
+      <div class="col-md-3"><label class="form-label" for="{{ form.language.id }}">{{ tr("language") }}</label>{{ form.language(class="form-select") }}</div>
+      <div class="col-12"><label class="form-label" for="{{ form.content.id }}">{{ tr("content") }}</label>{{ form.content(class="form-control", rows=4) }}</div>
+    </div>
+    <button class="btn btn-success mt-3" type="submit">{{ tr("publish_alert") }}</button>
+  </form>
+  {% for alert in alerts %}
+  <p class="list-line"><strong>{{ alert.title }}</strong> {{ alert.category }} / {{ alert.severity }} / {{ alert.language }}</p>
+  {% endfor %}
+</section>
+{% endblock %}

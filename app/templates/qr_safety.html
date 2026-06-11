@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <h1>{{ tr("qr_safety_title") }}</h1>
+  <p class="lead">{{ tr("qr_safety_body") }}</p>
+  <div class="row g-3">
+    {% for key in ["qr_fraud", "fake_payment_requests", "merchant_verification"] %}
+    <div class="col-md-4"><article class="info-card h-100"><h2>{{ tr(key) }}</h2><p>{{ tr("card_summary") }}</p></article></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

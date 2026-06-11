@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5 narrow">
+  <h1>{{ tr("daily_challenge") }}</h1>
+  <div class="tool-panel">
+    <div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+      <span class="badge text-bg-success">{{ tr("challenge_streak") }}: {{ current_user.challenge_streak }}</span>
+      <span class="badge text-bg-secondary">{{ tr("xp_points") }}: {{ current_user.xp_points }}</span>
+    </div>
+    {% if challenge %}
+      <h2>{{ challenge.question }}</h2>
+      {% if existing %}
+        <div class="alert alert-info">{{ tr("already_attempted") }}</div>
+      {% elif result is not none %}
+        <div class="alert alert-{{ 'success' if result else 'warning' }}">{{ tr("correct") if result else tr("incorrect") }}</div>
+      {% endif %}
+      <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% for key, value in [("A", challenge.option_a), ("B", challenge.option_b), ("C", challenge.option_c), ("D", challenge.option_d)] %}
+        <label class="option"><input type="radio" name="answer" value="{{ key }}" required {% if existing %}disabled{% endif %}> {{ value }}</label>
+        {% endfor %}
+        {% if not existing %}<button class="btn btn-success mt-3">{{ tr("submit_answer") }}</button>{% endif %}
+      </form>
+      {% if existing %}
+      <p class="mt-3"><strong>{{ tr("explanation") }}:</strong> {{ challenge.explanation }}</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

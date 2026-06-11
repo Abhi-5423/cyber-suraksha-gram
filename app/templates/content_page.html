@@ -4,8 +4,8 @@
   <h1>{{ title }}</h1>
   <p class="lead">{{ body }}</p>
   <div class="d-flex gap-2 flex-wrap">
-    <a class="btn btn-success" href="{{ url_for('main.awareness') }}">Awareness</a>
-    <a class="btn btn-outline-success" href="{{ url_for('main.scam_checker') }}">Check Message</a>
+    <a class="btn btn-success" href="{{ url_for('main.awareness') }}">{{ tr("awareness") }}</a>
+    <a class="btn btn-outline-success" href="{{ url_for('main.scam_checker') }}">{{ tr("check_message") }}</a>
   </div>
 </section>
 {% endblock %}
